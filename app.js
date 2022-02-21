@@ -1,6 +1,7 @@
 const path = require('path');
 
 const express = require('express');
+const dotenv = require('dotenv').config()
 const session = require('express-session')
 const bodyParser = require('body-parser');
 const csrf = require('csurf')
