@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs')
-const { validationResult } = require("express-validator")
+// const sendMail = require("../util/sendMail")
+const crypto = require("crypto");
+const { validationResult } = require("express-validator/check")
 
 
 
@@ -78,7 +80,7 @@ exports.postSignup = (req, res, next) => {
     return newUser.save()
   })
   .then(result=>{
-    // sendMail(email, `Thank you for registering with us! ${email}`, cb=>{
+    // sendMail(email, `Thank you for registering with us ${email}`, cb=>{
       res.redirect("/login")
     // })
   })
@@ -105,8 +107,13 @@ exports.getReset = (req, res, next) => {
 
 
 exports.postReset = (req, res, next)=>{
+  crypto.randomBytes(32, (err, buffer)=>{
+    if(err){
+      console.log(err);
+      return res.redirect("/reset")
+    }
 
-    const token = "gvdjherfrbjkerjkberuyb367vrj"
+    const token = buffer.toString("hex")
     User.findOne({email: req.body.email})
     .then(user=>{
       if(!user){
@@ -126,6 +133,7 @@ exports.postReset = (req, res, next)=>{
       // })
     })
     .catch(err => console.log(err))
+  })
 }
 
 
