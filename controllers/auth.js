@@ -107,13 +107,8 @@ exports.getReset = (req, res, next) => {
 
 
 exports.postReset = (req, res, next)=>{
-  crypto.randomBytes(32, (err, buffer)=>{
-    if(err){
-      console.log(err);
-      return res.redirect("/reset")
-    }
 
-    const token = buffer.toString("hex")
+    const token = "gvdjherfrbjkerjkberuyb367vrj"
     User.findOne({email: req.body.email})
     .then(user=>{
       if(!user){
@@ -133,7 +128,6 @@ exports.postReset = (req, res, next)=>{
       })
     })
     .catch(err => console.log(err))
-  })
 }
 
 
