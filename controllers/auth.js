@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs')
-const sendMail = require("../util/sendMail")
 const { validationResult } = require("express-validator/check")
 
 
@@ -121,10 +120,10 @@ exports.postReset = (req, res, next)=>{
     })
     .then(result=>{
       const textToSend = `<h1>You requested a password reset</h1><h1>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password</h1>`
-      sendMail(req.body.email, textToSend, cb=>{
-        console.log((cb));
+      // sendMail(req.body.email, textToSend, cb=>{
+        // console.log((cb));
         res.redirect("/login")
-      })
+      // })
     })
     .catch(err => console.log(err))
 }
