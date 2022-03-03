@@ -80,7 +80,7 @@ exports.postSignup = (req, res, next) => {
     return newUser.save()
   })
   .then(result=>{
-    sendMail(email, `Thank you for registering with us ${email}`, cb=>{
+    sendMail(email, `Thank you for registering with us! ${email}`, cb=>{
       res.redirect("/login")
     })
   })
