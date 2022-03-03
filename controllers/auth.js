@@ -1,7 +1,6 @@
 const User = require("../models/user");
 const bcryptjs = require('bcryptjs')
 const sendMail = require("../util/sendMail")
-const crypto = require("crypto");
 const { validationResult } = require("express-validator/check")
 
 
@@ -80,9 +79,9 @@ exports.postSignup = (req, res, next) => {
     return newUser.save()
   })
   .then(result=>{
-    sendMail(email, `Thank you for registering with us! ${email}`, cb=>{
+    // sendMail(email, `Thank you for registering with us! ${email}`, cb=>{
       res.redirect("/login")
-    })
+    // })
   })
   .catch(err => console.log(err))
 }
