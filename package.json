@@ -8,11 +8,8 @@
     "start": "nodemon app.js",
     "start-server": "node app.js"
   },
-  "author": "Maximilian Schwarzmüller",
+  "author": "Macaulay",
   "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.18.3"
-  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
