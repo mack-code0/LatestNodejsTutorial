@@ -44,13 +44,23 @@ app.use((req, res, next)=>{
 })
 
 app.use((req, res, next)=>{
+  // throw new Error("outsede ere")
   if(!req.session.user){
+    console.log(req.url);
     return next()
   }
   User.findById(req.session.user._id)
   .then(user=>{
+    // If an error is thrown in a asynchronous code(promises or callbacks), you need to wrap the error with the next() function
+    // If the error is thrown in an ordinary function, you don't need to wrap it in a next function, the error middleware is called automatically
+    // throw new Error("An errr")
+    if(!user){
+      return next()
+    }
     req.user = user
     next()
+  }).catch(err => {
+    next(new Error(err))
   })
 })
 
@@ -59,7 +69,12 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get("/500", errorController.get500)
 app.use(errorController.get404);
+
+app.use((error, req, res, next)=>{
+  res.status(500).render('error/500', { pageTitle: 'Server Error', path: 'error/500', isAuthenticated: req.session.user });
+})
 
 mongoose.connect(MONGODB_URI)
   .then(result => {
