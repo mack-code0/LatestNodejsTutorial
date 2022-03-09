@@ -47,7 +47,7 @@ const authRoutes = require('./routes/auth');
 app.use(express.urlencoded({ extended: false }));
 app.use(multer({storage: storage, fileFilter: fileFilter}).single("image"))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use("/images",express.static(path.join(__dirname, 'images')));
+app.use("/images", express.static(path.join(__dirname, 'images')));
 app.use(session({
   secret: "My Secret Key",
   resave: false,
@@ -91,6 +91,7 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 app.use((error, req, res, next)=>{
+  console.log(error);
   res.status(500).render('error/500', { pageTitle: 'Server Error', path: 'error/500', isAuthenticated: req.session.isLoggedIn });
 })
 
