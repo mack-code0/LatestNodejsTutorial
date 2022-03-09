@@ -6,6 +6,7 @@ const csrf = require('csurf')
 const flash = require('connect-flash')
 const mongoose = require('mongoose');
 const mongoDbStore = require('connect-mongodb-session')(session)
+const multer = require('multer')
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -19,6 +20,23 @@ const store = new mongoDbStore({
 })
 const csrfProtection = csrf()
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb)=>{
+    cb(null, "images")
+  },
+  filename: (req, file, cb)=>{
+    cb(null, new Date().getTime() + "-" + file.originalname)
+  }
+})
+
+const fileFilter = (req, file, cb)=>{
+  if(file.mimetype === "image/png" || file.mimetype === "image/jpg" || file.mimetype === "image/jpeg"){
+    cb(null, true)
+  }else{
+    cb(null, false)
+  }
+}
+
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
@@ -27,7 +45,9 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 
 app.use(express.urlencoded({ extended: false }));
+app.use(multer({storage: storage, fileFilter: fileFilter}).single("image"))
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/images",express.static(path.join(__dirname, 'images')));
 app.use(session({
   secret: "My Secret Key",
   resave: false,
@@ -46,7 +66,6 @@ app.use((req, res, next)=>{
 app.use((req, res, next)=>{
   // throw new Error("outsede ere")
   if(!req.session.user){
-    console.log(req.url);
     return next()
   }
   User.findById(req.session.user._id)
@@ -69,11 +88,10 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-app.get("/500", errorController.get500)
 app.use(errorController.get404);
 
 app.use((error, req, res, next)=>{
-  res.status(500).render('error/500', { pageTitle: 'Server Error', path: 'error/500', isAuthenticated: req.session.user });
+  res.status(500).render('error/500', { pageTitle: 'Server Error', path: 'error/500', isAuthenticated: req.session.isLoggedIn });
 })
 
 mongoose.connect(MONGODB_URI)

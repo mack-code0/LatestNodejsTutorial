@@ -16,19 +16,20 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
 
+
   const errors = validationResult(req)
-  if(!errors.isEmpty()){
+  if(!errors.isEmpty() || !image){
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
       editing: false,
       hasError: true,
-      product: {title, imageUrl, price, description},
-      errorMessage: errors.array()[0].msg,
+      product: {title, price, description},
+      errorMessage: typeof image === "undefined"?"Select an Image":errors.array()[0].msg,
       validationErrors: errors.array()
     });
   }
@@ -37,7 +38,7 @@ exports.postAddProduct = (req, res, next) => {
     title: title,
     price: price,
     description: description,
-    imageUrl: imageUrl,
+    imageUrl: image.path,
     userId: req.session.user
   });
   product
