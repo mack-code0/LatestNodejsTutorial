@@ -106,14 +106,17 @@ exports.postCart = (req, res, next) => {
     });
 };
 
-exports.postCartDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+exports.deleteProduct = (req, res, next) => {
+  console.log("got Here");
+  const prodId = req.params.productId;
   req.user
     .removeFromCart(prodId)
     .then(result => {
-      res.redirect('/cart');
+      res.status('200').json({successfull: "Deleted product successfully!"})
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      res.status('500').json({error: "An error occured!"})
+    });
 };
 
 exports.postOrder = (req, res, next) => {

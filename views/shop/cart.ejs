@@ -11,11 +11,9 @@
                         <li class="cart__item">
                             <h1><%= p.productId.title %></h1>
                             <h2>Quantity: <%= p.quantity %></h2>
-                            <form action="/cart-delete-item" method="POST">
-                                <input type="hidden" value="<%= p.productId._id %>" name="productId">
-                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                <button class="btn danger" type="submit">Delete</button>
-                            </form>
+                            <input type="hidden" value="<%= p.productId._id %>" name="productId">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button onclick="deleteCart(this)" class="btn danger" type="submit">Delete</button>
                         </li>
                     <% }) %>
                 </ul>
@@ -31,4 +29,5 @@
                 <h1>No Products in Cart!</h1>
             <% } %>
         </main>
+        <script src="/js/delete.js"></script>
         <%- include('../includes/end.ejs') %>
